@@ -1,30 +1,40 @@
 package com.pluralsight.courseinfo.cli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.pluralsight.courseinfo.service.CourseRetrievalService;
+import com.pluralsight.courseinfo.service.PluralsightCourse;
+
 public class CourseRetriever {
+	private static final Logger LOG = LoggerFactory.getLogger(CourseRetriever.class);
 
 	public static void main(String[] args) {
 
-		System.out.println("CourseRetriever started!");
+		LOG.info("CourseRetriever started!");
 		
 		if(args.length == 0) {
-			System.out.println("Please provide an author name as first parameter.");
+			LOG.warn("Please provide an author name as first parameter.");
 			return;
 		}
 		
 		try {
 			retrieveCourses(args[0]);
+
 			
 		} catch (Exception e) {
 		
-			System.out.println("Error during retrieve courses");
+			LOG.error("Error during retrieve courses: " + e);
 			e.printStackTrace();
 		}
 	}
 
 	private static void retrieveCourses(String authorId) {
 
-		System.out.println("Retrieving courses for author: " + authorId);
+		LOG.info("Retrieving courses for author: '{}'", authorId);
+		CourseRetrievalService service = new CourseRetrievalService();
+		
+		String coursesToStore = service.getCoursesFor(authorId);
+		LOG.info("Courses retrieved: {}", coursesToStore);
 	}
-	
-
 }
