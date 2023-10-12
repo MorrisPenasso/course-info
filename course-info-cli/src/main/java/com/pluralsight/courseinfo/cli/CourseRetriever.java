@@ -5,7 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pluralsight.courseinfo.repository.CourseRepository;
 import com.pluralsight.courseinfo.service.CourseRetrievalService;
+import com.pluralsight.courseinfo.service.CourseStorageService;
 import com.pluralsight.courseinfo.service.PluralsightCourse;
 
 public class CourseRetriever {
@@ -40,6 +42,9 @@ public class CourseRetriever {
 		//Create an CourseRetrievalService object
 		CourseRetrievalService service = new CourseRetrievalService();
 		
+		CourseRepository repository = CourseRepository.openCourseRepository("./courses.db");
+		CourseStorageService courseStorageService = new CourseStorageService(repository);
+		
 		/**
 		 * retrieve courses and filter the list with courses that are not retired
 		 * ( convert list to strem and riconvert to list ) 
@@ -48,5 +53,8 @@ public class CourseRetriever {
 				.filter(course -> !course.isRetired()).toList();
 		
 		LOG.info("Retrieved the following {} courses {}", coursesToStore.size(), coursesToStore);
+		
+		courseStorageService.storePluralsightCourses(coursesToStore);
+		LOG.info("Courses stored!");
 	}
 }
